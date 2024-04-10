@@ -7,7 +7,10 @@ namespace EdgeTiles
     public class AssignEdges : MonoBehaviour
     {
 
-        enum TileType { None, NPeninsula, SPeninsula, WPeninsula, EPeninsula, NECorner, NWCorner, SECorner, SWCorner }
+        enum TileType { 
+            None, NPeninsula, SPeninsula, WPeninsula, EPeninsula, NECorner, NWCorner, SECorner, SWCorner, 
+            NSBridge, WEBridge, Nside, Sside, Wside, Eside
+        }
 
         [SerializeField] private GameObject humpEastPrefab;
         [SerializeField] private GameObject humpNorthPrefab;
@@ -17,6 +20,13 @@ namespace EdgeTiles
         [SerializeField] private GameObject NWcornerPrefab;
         [SerializeField] private GameObject SEcornerPrefab;
         [SerializeField] private GameObject SWcornerPrefab;
+        
+        [SerializeField] private GameObject NSBridgePrefab;
+        [SerializeField] private GameObject WEBridgePrefab;
+        [SerializeField] private GameObject NsidePrefab;
+        [SerializeField] private GameObject SsidePrefab;
+        [SerializeField] private GameObject WsidePrefab;
+        [SerializeField] private GameObject EsidePrefab;
 
         private Dictionary<Vector2Int, GameObject> tileObjects;
         private int scale;
@@ -65,6 +75,25 @@ namespace EdgeTiles
                         break;
                     case TileType.EPeninsula:
                         SwapTile(tilePos, humpEastPrefab); // Replace with East Peninsula tile prefab
+                        break;
+                    
+                    case TileType.NSBridge:
+                        SwapTile(tilePos, NSBridgePrefab); // Replace with East Peninsula tile prefab
+                        break;
+                    case TileType.WEBridge:
+                        SwapTile(tilePos, WEBridgePrefab); // Replace with East Peninsula tile prefab
+                        break;
+                    case TileType.Nside:
+                        SwapTile(tilePos, NsidePrefab); // Replace with East Peninsula tile prefab
+                        break;
+                    case TileType.Sside:
+                        SwapTile(tilePos, SsidePrefab); // Replace with East Peninsula tile prefab
+                        break;
+                    case TileType.Wside:
+                        SwapTile(tilePos, WsidePrefab); // Replace with East Peninsula tile prefab
+                        break;
+                    case TileType.Eside:
+                        SwapTile(tilePos, EsidePrefab); // Replace with East Peninsula tile prefab
                         break;
                     case TileType.None:
                     default:
@@ -121,11 +150,49 @@ namespace EdgeTiles
                 flag = false;
             }
             if(flag) {
+                bool flag2 = true;
+
                 // Check corners
-                if (!up && !right) type = TileType.NECorner;
-                if (!up && !left) type = TileType.NWCorner;
-                if (!down && !right) type = TileType.SECorner;
-                if (!down && !left) type = TileType.SWCorner;
+                if (!up && !right) {
+                    type = TileType.NECorner;
+                    flag2 = false;
+                }
+                if (!up && !left) {
+                    type = TileType.NWCorner;
+                    flag2 = false;
+                } 
+                if (!down && !right) {
+                    type = TileType.SECorner;
+                    flag2 = false;
+                }
+                if (!down && !left) {
+                    type = TileType.SWCorner;
+                    flag2 = false;
+                }
+
+                
+                if (flag2) {
+                    bool flag3 = true; 
+
+                    // Check bridges
+                    if (!left && !right) {
+                        type = TileType.NSBridge;
+                        flag3 = false;
+                    }
+                    if (!up && !down) {
+                        type = TileType.WEBridge;
+                        flag3 = false;
+                    }
+
+                    if (flag3) {
+                        // Check sides
+                        if (!up) type = TileType.Nside;
+                        if (!down) type = TileType.Sside;
+                        if (!left) type = TileType.Wside;
+                        if (!right) type = TileType.Eside;
+                    }
+                }
+
             }
 
 
